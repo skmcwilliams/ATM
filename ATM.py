@@ -5,16 +5,67 @@ from datetime import date, time
 from random import randint
 
 
+class Account():
+    """Account has same attributes as sublcasses"""
+    def __init__(self,current_bal,current_no,savings_bal,savings_no):
+        Current.__init__(self)
+        Savings.__init__(self)
 
-class Savings():
+    def deposit(self,amount,account):
+        """method to deposit funds"""
+        if account == 'current':
+            print(f'Initiating Deposit to account# {self.current_no} - Prior balance of {self.current_bal} will be increased by {amount}.')
+            self.current_bal = self.current_bal + amount
+            print(f'Your New Balance is {self.current_bal}.')
+            
+        if account == 'savings':
+            print(f'Initiating Deposit to account# {self.current_no} - Prior balance of {self.savings_bal} will be increased by {amount}.')
+            self.savings_bal = self.savings_bal + amount
+            print(f'Your New Balance is {self.savings_bal}.')
+              
+    def withdraw(self, amount, account):
+        """withdraws from current or savings accounts"""
+        if self.current_bal-amount > 0 and account == 'current':
+            print(f'Initiating Withdraw from account# {self.current_no} - Prior balance of {self.current_bal} will be decreased by {amount}.\n')
+            self.current_bal = self.current_bal - amount
+            print(f'Transaction complete. Your new balance is: {self.current_bal}') 
+        
+        if account == 'savings' and self.savings_bal-amount > 0:
+            print(f'Initiating Withdraw from account# {self.savings_no} - Prior balance of {self.savings_bal} will be decreased by {amount}.\n') 
+            self.savings_bal = self.savings_bal-amount
+            print(f'Transaction Complete. Your new balance is {self.savings_bal}')
+            
+        while account=='savings' and self.savings_bal - amount < 0:
+            print('Insufficient funds, please try agian')
+            break
+        
+        while account=='current' and self.current_bal - amount < 0:
+            print('Insufficient funds, please try agian')
+            break
+        
+        if account != 'savings' and account != 'current':
+            print('please check account type and try again')
+           
+    def CreateTransaction(self,trans_type,amount,account):
+        """User creates transaction when making deposit/withdraw, call within class"""
+        if trans_type == "deposit":
+           Account.deposit(self, amount,account)
+        if trans_type == 'withdraw':
+            Account.withdraw(self, amount,account)
+            
+    
+class Savings(Account):
     """create base class Savings"""
     def __init__(self,**args):
         self.savings_no = 100238
         self.savings_bal = 25000
         self.args = args
+        
+    def withdraw(self,amount,account):
+        Account.withdraw(self,amount,'savings')
 
         
-class Current():  
+class Current(Account):  
     """create base class Current"""
     def __init__(self,**args):
         self.current_no = 100239
@@ -22,6 +73,7 @@ class Current():
         
     def withdraw(self, amount, account):
         """create method to withdraw from account"""
+        Account.withdraw(self,self.current_bal,'current')
         
         if self.current_bal-amount > 0 and account == 'current':
             print(f'Initiating Withdraw from account# {self.current_no} - Prior balance of {self.current_bal} will be decreased by {amount}.\n')
@@ -44,35 +96,6 @@ class Current():
         if account != 'savings' and account != 'current':
             print('please check account type and try again')
             
-        
-class Account(Current, Savings):
-    """Account has same attributes as sublcasses"""
-    def __init__(self,current_bal,current_no,savings_bal,savings_no):
-        Current.__init__(self)
-        Savings.__init__(self)
-
-    def deposit(self,amount,account):
-        """method to deposit funds"""
-        if account == 'current':
-            print(f'Initiating Deposit to account# {self.current_no} - Prior balance of {self.current_bal} will be increased by {amount}.')
-            self.current_bal = self.current_bal + amount
-            print(f'Your New Balance is {self.current_bal}.')
-            
-        if account == 'savings':
-            print(f'Initiating Deposit to account# {self.current_no} - Prior balance of {self.savings_bal} will be increased by {amount}.')
-            self.current_bal = self.current_bal + amount
-            print(f'Your New Balance is {self.savings_bal}.')
-              
-    def withdraw(self, amount, account):
-        """withdraws from current or savings accounts"""
-        Current.withdraw(self,amount,account)
-           
-    def CreateTransaction(self,trans_type,amount,account):
-        """User creates transaction when making deposit/withdraw, call within class"""
-        if trans_type == "deposit":
-           Account.deposit(self, amount,account)
-        if trans_type == 'withdraw':
-            Account.withdraw(self, amount,account)
         
 
 class ATM_Transactions(Account):
